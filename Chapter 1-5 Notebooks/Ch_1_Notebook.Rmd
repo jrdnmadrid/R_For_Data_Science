@@ -193,6 +193,45 @@ ggplot(data = mpg) +
 
 #6) When using facet_grid() you should usually put the variable with more unique levels in the columns. Why?
 
-#Answer: Humans read top to bottom, and having more unique columns makes the chart easier to read versus having them in the rows. 
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x =drv, y = cyl)) +
+  facet_grid(cyl ~ drv)
 
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x =drv, y = cyl)) +
+  facet_grid(drv ~ cyl)
+
+#Answer: Humans read top to bottom, and having more unique columns makes the chart easier to read versus having them in the rows. See the two lines of code above to see for yourself. 
 # Section - Geometric Objects
+
+# A geom is the geometrical object that a plot uses to represent data. Bar charts use bar geoms, line charts use line geoms, box plots use boxplot geoms etc. Look at the below difference between the two lines of code. 
+
+# left
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x= displ, y = hwy)) 
+  
+# right
+ggplot(data = mpg) + 
+  geom_smooth(mapping = aes(x = displ, y= hwy))
+  
+# While you cannot set a shape of a line (but can a point), you can set a linetype of a line. See below for 3 lines that separate out based on values of DRV, 4/f/r:
+
+ggplot(data = mpg) +
+  geom_smooth(mapping = aes(x = displ, y = hwy, linetype = drv))
+
+# One Geom
+ggplot(data = mpg) + 
+  geom_smooth(mapping = aes(x = displ, y = hwy)) 
+
+# One geom - grouped function
+ggplot(data = mpg) + 
+  geom_smooth(mapping = aes(x = displ, y = hwy, group = drv)) 
+
+#One geom - using color as a grouping
+ggplot(data = mpg) + 
+  geom_smooth(mapping = aes(x = displ, y = hwy, color = drv))
+    
+#You can also map multiple geoms to a specific set of data. See below
+
+ggplot(data = mpg) + 
+  
