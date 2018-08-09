@@ -457,3 +457,107 @@ ggplot(data = diamonds) +
 # Section - Position Adjustments
 
 #You can color a bar chart using either color or aesthetic
+
+#Color
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x= cut, color = cut))
+  
+#Fill
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = cut))
+
+#If you use a fill aesthetic with another variable like clarity, bars are automatically stacked. 
+
+ggplot(data = diamonds) +
+  geom_bar(mapping = aes(x=  cut, fill = clarity))
+  
+#If you dont want a stacked bar chart, you can use "identity", "Dodge", or "fill".
+
+#Position = "Identity" will place each object exactly where it falls into the context of the graph. Not useful for bars b/c it overlaps them. To see overlapping, we either need to make bars slightly transparent by setting alpha to a small value, or completely transparent by setting fill = NA. 
+  
+ggplot(
+  data = diamonds,
+  mapping = aes(x = cut, fill = clarity)
+) + 
+  geom_bar(alpha = 1/5, position = "identity")
+ggplot(
+  data = diamonds,
+  mapping = aes(x = cut, color = clarity)
+) + 
+  geom_bar(fill = NA, position = "identity")
+  
+# The identity position adjustment is more useful for 2D geoms, like points, where it is default. 
+
+# Position = "fill" works like stacking, but makes each set of stacked bars the same height. This makes it easier to compare proportions across groups. 
+
+ggplot(data = diamonds) +
+  geom_bar(
+    mapping = aes(x = cut, fill = clarity),
+    position = "fill"
+)
+
+# Position = "Dodge" places overlapping objects directly beside one another. This makes it easier to compare individual values. 
+
+ggplot(data = diamonds) + 
+  geom_bar(
+    mapping = aes(x = cut, fill = clarity),
+    position = "dodge"
+  )
+  
+# Position = "Jitter" is useful for scatterplots to see a small amount of random noise to each point Spreads the points out because  no two points are likely to receive the same amount of random noise. 
+
+# Without Jitter
+ggplot(data = mpg) + 
+  geom_point(
+    mapping = aes(x= displ, y = hwy))
+# With Jitter
+ggplot(data = mpg) + 
+  geom_point(
+    mapping = aes(x= displ, y = hwy),
+    position = "jitter"
+  )
+  
+  
+#Exercises
+
+#1) What is the problem with this plot? How could you improve it?
+
+ggplot(data = mpg, mapping = aes(x = cty, y= hwy)) + 
+  geom_point()
+  
+#Answer: The first problem is that it is mapping two dependent variables, city and hwy. Both should be mapped individually to something else, such as engine size. In terms of the actual problem with the graph, I think we can include Jitter in order to make the data showcase clusters. There is overplotting b/c multiple observations for each grouping. 
+
+#Jitter
+ggplot(data = mpg, mapping = aes(x = cty, y= hwy)) + 
+  geom_point(position = "jitter")
+  
+  
+#2) What parameters to geom_jitter() control the amount of jittering?
+
+?geom_jitter()
+  
+# Answer: Width and height control vertical and horizontal jitter. 
+
+#3) Compare and contrast geom_jitter() and geom_count()
+
+#Jitter
+ggplot(data = mpg, mapping = aes(x = cty, y= hwy)) + 
+  geom_jitter()
+
+#Count
+ggplot(data = mpg, mapping = aes(x = cty, y= hwy)) + 
+  geom_count()
+
+#Answer: Jitter geom is just a convenient shortcut for geom_point (position = "jitter"). Geom_count is a variant of geom_point. Geom_count or jitter is usually more approriate than geom_point. For geom_count, points with more observations will be larger than those with fewer observations, and this isn't the case with geom_jitter. 
+
+#4) What's the default position adjustment for geom_boxplot()? Create a visualization of the mpg dataset that demostrates it. 
+
+?geom_boxplot()
+
+ggplot(data = mpg, mapping = aes(x = drv, y = hwy, color = class)) + 
+  geom_boxplot()
+  
+#Answer: A boxplot displays distribution of a continuous variable. It visualizes five summary statistics, median, two hinges and two whiskers, and outlying points individually. It looks like the defualt position is dodge - which puts overlapping objects beside one another.
+
+
+
