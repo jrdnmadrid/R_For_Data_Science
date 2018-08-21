@@ -559,5 +559,103 @@ ggplot(data = mpg, mapping = aes(x = drv, y = hwy, color = class)) +
   
 #Answer: A boxplot displays distribution of a continuous variable. It visualizes five summary statistics, median, two hinges and two whiskers, and outlying points individually. It looks like the defualt position is dodge - which puts overlapping objects beside one another.
 
+#Section - Coordinate Systems
+
+# The default coordinate system is cartesian coordinate system. Others include:
+
+#Cooord_flip() switches x and why axis. Useful if you want horizontal boxplots/long labels. 
+
+#Without coord flip
+ggplot(data = mpg, mapping = aes(x = class, y = hwy)) + 
+  geom_boxplot()
+
+#With coord flip
+ggplot(data = mpg, mapping = aes(x = class, y = hwy)) + 
+  geom_boxplot() + 
+  coord_flip()
+
+# There is also coord_quickmap() which sets aspect ratio correctly for maps. Important for plotting spatial data, such as places. 
+
+install.packages("maps")
+
+nz <- map_data("nz")
+
+ggplot(nz, aes(long, lat, group = group)) + 
+  geom_polygon(fill = "white", color = "black")
+  
+ggplot(nz, aes(long, lat, group = group)) + 
+  geom_polygon(fill = "white", color = "black") + 
+  coord_quickmap()
+
+# Coord_polar() uses polar coordinates. Polar coordinates reveal an interesting connection between a bar chart and a coxcomb cahrt. 
+
+bar <- ggplot(data = diamonds) +
+  geom_bar(
+  mapping = aes(x = cut, fill = cut),
+  show.legend = FALSE,
+  width = 1
+  ) + 
+  theme(aspect.ratio = 1) +
+  labs(x = NULL, y = NULL)
+
+#Coord flip
+bar + coord_flip()
+
+#Coord polar
+bar + coord_polar()
 
 
+#Exercises
+
+#1) Turn a stacked bar chart into a pie chart using coord_polar()
+
+#Answer: 
+
+#Stacked bar chart - using x = factor(1) makes it so you do not need an x variable, or only put one variable there.
+stacked_chart <- ggplot(data = diamonds) + 
+  geom_bar(
+  mapping = aes(x = factor(1), fill = cut),
+  position = "fill"
+  )
+  
+#Pie Chart
+stacked_chart + coord_polar(theta = "y")
+#Theta = Y allows for the pie chart. Without the Y, it simply becomes a bullseye. See below.
+
+#Bullseye
+stacked_chart + coord_polar()
+
+#2) WHat does labs() do? Read the documentation.
+
+?labs()
+
+# Answer: Labs essentially allows you to display the full variable name, on both the axes. 
+
+#3) What's the difference between coord_quickmap() and coord_map()
+
+?coord_quickmap()
+?coord_map()
+
+# Answer: Coord map projects a portion of the earth onto a flat 2d plane. This does not preserve straight lines and requires computation. Quickmap requires far less computation and preserves lines. This means it is better for smaller areas closer to the equator. 
+
+#4) What does the following plot tell you about the relationship between city and highway MPG? Why is coord_fixed() important? What does geom_abline() do?
+
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + 
+  geom_point() + 
+  geom_abline() + 
+  coord_fixed()
+  
+# Without coord_fixed
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + 
+  geom_point() + 
+  geom_abline() 
+  
+#Answer: Coord_fixed allows you to keep a consistent X/Y ratio, reducing "zoom" into the picture to fit/scale and makes larger scatterplots easier to read. 
+
+#Without geom_abline()
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + 
+  geom_point() + 
+  coord_fixed()
+  
+?geom_abline()
+#geom_abline() plots a straight line through your data, essentially a reference line. 
